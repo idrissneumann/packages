@@ -23,19 +23,15 @@ helm:
       storage:
         s3: {}
 valueDefinitions:
-  s3Uri:
+  defaultIndexRootUri:
     type: text
     metadata:
       description: >
-        The S3 URI usually looks like this: "s3://<bucket-name>/<optional-base-path>"
+        The default index URI is a S3 bucket which usually looks like this: "s3://<bucket-name>/<optional-base-path>"
     constraints:
       required: true
       minLength: 1
     targets:
-      - chartName: quickwit
-        patch:
-          op: add
-          path: /environment/QW_METASTORE_URI
       - chartName: quickwit
         patch:
           op: add
@@ -89,6 +85,19 @@ valueDefinitions:
         patch:
           op: add
           path: /config/storage/s3/secret_access_key
+  metastoreUri:
+    type: text
+    metadata:
+      description: >
+        If you're not using PostgreSQL and object storage, you can pick the same bucket and value you used for the defaultIndexRootUri parameter
+    constraints:
+      required: true
+      minLength: 1
+    targets:
+      - chartName: quickwit
+        patch:
+          op: add
+          path: /environment/QW_METASTORE_URI
 entrypoints:
   - serviceName: quickwit-searcher
     port: 7280
